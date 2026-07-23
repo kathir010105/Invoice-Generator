@@ -1,4 +1,4 @@
-import React, { FC } from 'react'
+import React, { FC, useMemo } from 'react'
 import { PDFDownloadLink } from '@react-pdf/renderer'
 import { Invoice, TInvoice } from '../data/types'
 import { useDebounce } from '@uidotdev/usehooks'
@@ -44,16 +44,20 @@ const Download: FC<Props> = ({ data, setData }) => {
   }
 
   const title = data.invoiceTitle ? data.invoiceTitle.toLowerCase() : 'invoice'
+  const pdfDocument = useMemo(() => <InvoicePage pdfMode={true} data={debounced} />, [debounced])
+
   return (
     <div className={'download-pdf '}>
       <PDFDownloadLink
-        key="pdf"
-        document={<InvoicePage pdfMode={true} data={debounced} />}
+        key={title}
+        document={pdfDocument}
         fileName={`${title}.pdf`}
         aria-label="Save PDF"
         title="Save PDF"
         className="download-pdf__pdf"
-      ></PDFDownloadLink>
+      >
+        {({ loading }) => (loading ? 'Preparing PDF...' : 'Save PDF')}
+      </PDFDownloadLink>
       <p>Save PDF</p>
 
       <button

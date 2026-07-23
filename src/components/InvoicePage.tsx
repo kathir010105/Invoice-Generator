@@ -33,9 +33,17 @@ interface Props {
 }
 
 const InvoicePage: FC<Props> = ({ data, pdfMode, onChange }) => {
-  const [invoice, setInvoice] = useState<Invoice>(data ? { ...data } : { ...initialInvoice })
+  const [invoice, setInvoice] = useState<Invoice>(() =>
+    data ? { ...data } : { ...initialInvoice },
+  )
   const [subTotal, setSubTotal] = useState<number>()
   const [saleTax, setSaleTax] = useState<number>()
+
+  useEffect(() => {
+    if (data && JSON.stringify(data) !== JSON.stringify(invoice)) {
+      setInvoice({ ...data })
+    }
+  }, [data, invoice])
 
   const dateFormat = 'MMM dd, yyyy'
   const invoiceDate = invoice.invoiceDate !== '' ? new Date(invoice.invoiceDate) : new Date()
