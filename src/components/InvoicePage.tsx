@@ -38,9 +38,11 @@ const InvoicePage: FC<Props> = ({ data, pdfMode, onChange }) => {
   const [subTotal, setSubTotal] = useState<number>()
   const [saleTax, setSaleTax] = useState<number>()
   const isLocalChange = useRef(false)
+  const pendingOnChange = useRef(false)
 
   useEffect(() => {
     if (data && !isLocalChange.current) {
+      pendingOnChange.current = false
       setInvoice({ ...data })
     }
     isLocalChange.current = false
@@ -48,6 +50,7 @@ const InvoicePage: FC<Props> = ({ data, pdfMode, onChange }) => {
 
   const updateInvoice = (newInvoice: Invoice) => {
     isLocalChange.current = true
+    pendingOnChange.current = true
     setInvoice(newInvoice)
   }
 
@@ -140,7 +143,8 @@ const InvoicePage: FC<Props> = ({ data, pdfMode, onChange }) => {
   }, [subTotal, invoice.taxLabel])
 
   useEffect(() => {
-    if (onChange) {
+    if (onChange && pendingOnChange.current) {
+      pendingOnChange.current = false
       onChange(invoice)
     }
   }, [onChange, invoice])

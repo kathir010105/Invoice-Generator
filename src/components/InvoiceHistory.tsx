@@ -43,10 +43,10 @@ const InvoiceHistory: FC<Props> = ({ records, currentId, onLoad, onDelete, onDup
             records.map((record) => (
               <div key={record.id} className={`history-item ${currentId === record.id ? 'active' : ''}`}>
                 <div className="item-content" onClick={() => onLoad(record.id)}>
-                  <div className="item-title">{record.invoice.companyName || 'Untitled Invoice'}</div>
+                  <div className="item-title">{record.invoice.clientName || 'Untitled Invoice'}</div>
                   <div className="item-details">
                     <span className="client">
-                      {record.invoice.clientName ? `Bill To: ${record.invoice.clientName}` : 'No client'}
+                      {record.invoice.companyName ? `From: ${record.invoice.companyName}` : 'No company'}
                     </span>
                     <span className="date">{format(new Date(record.updatedAt), dateFormat)}</span>
                   </div>

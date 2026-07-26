@@ -23,10 +23,48 @@ function App() {
   const { history, currentId, addInvoice, updateInvoice, deleteInvoice, getCurrentInvoice, loadInvoice, duplicateInvoice } =
     useInvoiceHistory()
 
-  const currentInvoice = useMemo(() => getCurrentInvoice() || getDefaultInvoice(), [getCurrentInvoice])
+  const generateNextInvoiceTitle = useCallback(() => {
+    let maxNumber = 0;
+    let prefix = 'INV-';
+    let paddedLength = 0;
+
+    history.forEach((record) => {
+      const title = record.invoice.invoiceTitle;
+      if (title) {
+        const match = title.match(/^(.*?)(\d+)$/);
+        if (match) {
+          const numStr = match[2];
+          const num = parseInt(numStr, 10);
+          if (num > maxNumber) {
+            maxNumber = num;
+            prefix = match[1];
+            paddedLength = numStr.length;
+          }
+        }
+      }
+    });
+
+    if (maxNumber > 0) {
+      const nextNumStr = (maxNumber + 1).toString();
+      const paddedNextNum = nextNumStr.padStart(paddedLength, '0');
+      return `${prefix}${paddedNextNum}`;
+    }
+    return 'INV-1';
+  }, [history]);
+
+  const getDefaultInvoiceWithAutoIncrement = useCallback((): Invoice => {
+    const baseInvoice = getDefaultInvoice();
+    baseInvoice.invoiceTitle = generateNextInvoiceTitle();
+    return baseInvoice;
+  }, [generateNextInvoiceTitle]);
+
+  const currentInvoice = useMemo(() => getCurrentInvoice() || getDefaultInvoiceWithAutoIncrement(), [
+    getCurrentInvoice,
+    getDefaultInvoiceWithAutoIncrement,
+  ])
 
   const handleNewInvoice = () => {
-    addInvoice(getDefaultInvoice())
+    addInvoice(getDefaultInvoiceWithAutoIncrement())
     setShowHistory(false)
   }
 

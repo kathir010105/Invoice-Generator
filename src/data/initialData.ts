@@ -36,8 +36,8 @@ export const initialInvoice: Invoice = {
   taxLabel: 'Sale Tax (10%)',
   totalLabel: 'TOTAL',
   currency: '₹',
-  // notesLabel: 'Notes',
-  // notes: 'It was great doing business with you.',
-  // termLabel: 'Terms & Conditions',
-  // term: 'Please make the payment by the due date.',
+  notesLabel: '',
+  notes: '',
+  termLabel: '',
+  term: '',
 }
