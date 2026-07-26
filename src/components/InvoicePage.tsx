@@ -1,4 +1,4 @@
-import { FC, useState, useEffect } from 'react'
+import { FC, useState, useEffect, useRef } from 'react'
 import { Invoice, ProductLine } from '../data/types'
 import { initialInvoice, initialProductLine } from '../data/initialData'
 import EditableInput from './EditableInput'
@@ -12,7 +12,6 @@ import Page from './Page'
 import View from './View'
 import Text from './Text'
 import { Font } from '@react-pdf/renderer'
-import Download from './DownloadPDF'
 import { format } from 'date-fns/format'
 
 Font.register({
@@ -38,23 +37,22 @@ const InvoicePage: FC<Props> = ({ data, pdfMode, onChange }) => {
   )
   const [subTotal, setSubTotal] = useState<number>()
   const [saleTax, setSaleTax] = useState<number>()
+  const isLocalChange = useRef(false)
 
   useEffect(() => {
-    if (data && JSON.stringify(data) !== JSON.stringify(invoice)) {
+    if (data && !isLocalChange.current) {
       setInvoice({ ...data })
     }
-  }, [data, invoice])
+    isLocalChange.current = false
+  }, [data])
+
+  const updateInvoice = (newInvoice: Invoice) => {
+    isLocalChange.current = true
+    setInvoice(newInvoice)
+  }
 
   const dateFormat = 'MMM dd, yyyy'
   const invoiceDate = invoice.invoiceDate !== '' ? new Date(invoice.invoiceDate) : new Date()
-  const invoiceDueDate =
-    invoice.invoiceDueDate !== ''
-      ? new Date(invoice.invoiceDueDate)
-      : new Date(invoiceDate.valueOf())
-
-  if (invoice.invoiceDueDate === '') {
-    invoiceDueDate.setDate(invoiceDueDate.getDate() + 30)
-  }
 
   const handleChange = (name: keyof Invoice, value: string | number) => {
     if (name !== 'productLines') {
@@ -66,7 +64,7 @@ const InvoicePage: FC<Props> = ({ data, pdfMode, onChange }) => {
         newInvoice[name] = value
       }
 
-      setInvoice(newInvoice)
+      updateInvoice(newInvoice)
     }
   }
 
@@ -96,19 +94,19 @@ const InvoicePage: FC<Props> = ({ data, pdfMode, onChange }) => {
       return { ...productLine }
     })
 
-    setInvoice({ ...invoice, productLines })
+    updateInvoice({ ...invoice, productLines })
   }
 
   const handleRemove = (i: number) => {
     const productLines = invoice.productLines.filter((_, index) => index !== i)
 
-    setInvoice({ ...invoice, productLines })
+    updateInvoice({ ...invoice, productLines })
   }
 
   const handleAdd = () => {
     const productLines = [...invoice.productLines, { ...initialProductLine }]
 
-    setInvoice({ ...invoice, productLines })
+    updateInvoice({ ...invoice, productLines })
   }
 
   const calculateAmount = (quantity: string, rate: string) => {
@@ -150,7 +148,7 @@ const InvoicePage: FC<Props> = ({ data, pdfMode, onChange }) => {
   return (
     <Document pdfMode={pdfMode}>
       <Page className="invoice-wrapper" pdfMode={pdfMode}>
-        {!pdfMode && <Download data={invoice} setData={(d) => setInvoice(d)} />}
+        {/* Download controls moved to sidebar to avoid duplicates */}
 
         <View className="flex" pdfMode={pdfMode}>
           <View className="w-50" pdfMode={pdfMode}>
@@ -168,6 +166,12 @@ const InvoicePage: FC<Props> = ({ data, pdfMode, onChange }) => {
               placeholder="Your Company"
               value={invoice.companyName}
               onChange={(value) => handleChange('companyName', value)}
+              pdfMode={pdfMode}
+            />
+            <EditableInput
+              placeholder="GSTIN No"
+              value={invoice.companyGSTIN}
+              onChange={(value) => handleChange('companyGSTIN', value)}
               pdfMode={pdfMode}
             />
             <EditableInput
@@ -275,29 +279,6 @@ const InvoicePage: FC<Props> = ({ data, pdfMode, onChange }) => {
                     handleChange(
                       'invoiceDate',
                       date && !Array.isArray(date) ? format(date, dateFormat) : '',
-                    )
-                  }
-                  pdfMode={pdfMode}
-                />
-              </View>
-            </View>
-            <View className="flex mb-5" pdfMode={pdfMode}>
-              <View className="w-40" pdfMode={pdfMode}>
-                <EditableInput
-                  className="bold"
-                  value={invoice.invoiceDueDateLabel}
-                  onChange={(value) => handleChange('invoiceDueDateLabel', value)}
-                  pdfMode={pdfMode}
-                />
-              </View>
-              <View className="w-60" pdfMode={pdfMode}>
-                <EditableCalendarInput
-                  value={format(invoiceDueDate, dateFormat)}
-                  selected={invoiceDueDate}
-                  onChange={(date) =>
-                    handleChange(
-                      'invoiceDueDate',
-                      date ? (!Array.isArray(date) ? format(date, dateFormat) : '') : '',
                     )
                   }
                   pdfMode={pdfMode}

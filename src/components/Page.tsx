@@ -7,18 +7,23 @@ interface Props {
   pdfMode?: boolean
 }
 
-const Page: FC<PropsWithChildren<Props>> = ({ className, pdfMode, children }) => {
-  return (
-    <>
-      {pdfMode ? (
-        <PdfPage size="A4" style={compose('page ' + (className ? className : ''))}>
-          {children}
-        </PdfPage>
-      ) : (
-        <div className={'page ' + (className ? className : '')}>{children}</div>
-      )}
-    </>
-  )
+const Page: FC<PropsWithChildren<Props>> = ({
+  className = '',
+  pdfMode,
+  children,
+}) => {
+  if (pdfMode) {
+    return (
+      <PdfPage
+        size="A4"
+        style={compose(`page ${className}`)}
+      >
+        {children}
+      </PdfPage>
+    )
+  }
+
+  return <div className={`page ${className}`}>{children}</div>
 }
 
 export default Page

@@ -8,9 +8,16 @@ import FileSaver from 'file-saver'
 interface Props {
   data: Invoice
   setData(data: Invoice): void
+  onToggleHistory(): void
+  onNewInvoice(): void
 }
 
-const Download: FC<Props> = ({ data, setData }) => {
+const Download: FC<Props> = ({
+  data,
+  setData,
+  onToggleHistory,
+  onNewInvoice,
+}) => {
   const debounced = useDebounce(data, 500)
 
   function handleInput(e: React.ChangeEvent<HTMLInputElement>) {
@@ -43,11 +50,25 @@ const Download: FC<Props> = ({ data, setData }) => {
     FileSaver(blob, title + '.template')
   }
 
+  function handleSaveDefaultTemplate() {
+    window.localStorage.setItem('defaultInvoiceTemplate', JSON.stringify(debounced))
+    window.alert('Saved as default template!')
+  }
+
   const title = data.invoiceTitle ? data.invoiceTitle.toLowerCase() : 'invoice'
   const pdfDocument = useMemo(() => <InvoicePage pdfMode={true} data={debounced} />, [debounced])
 
   return (
     <div className={'download-pdf '}>
+      <div className="download-pdf history-control">
+        <button
+          className="download-pdf__history"
+          aria-label="Toggle History"
+          onClick={onToggleHistory}
+        />
+        <p>History</p>
+      </div>
+
       <PDFDownloadLink
         key={title}
         document={pdfDocument}
@@ -56,7 +77,7 @@ const Download: FC<Props> = ({ data, setData }) => {
         title="Save PDF"
         className="download-pdf__pdf"
       >
-        {({ loading }) => (loading ? 'Preparing PDF...' : 'Save PDF')}
+        {() => null}
       </PDFDownloadLink>
       <p>Save PDF</p>
 
@@ -68,7 +89,16 @@ const Download: FC<Props> = ({ data, setData }) => {
       />
       <p className="text-small">Save Template</p>
 
-      <label className="download-pdf__template_upload">
+      <button
+        onClick={handleSaveDefaultTemplate}
+        aria-label="Save as Default"
+        title="Save as Default"
+        className="download-pdf__template_download"
+        style={{ marginTop: '10px' }}
+      />
+      <p className="text-small">Save as Default</p>
+
+      <label className="download-pdf__template_upload" style={{ marginTop: '10px' }}>
         <input type="file" accept=".json,.template" onChange={handleInput} />
       </label>
       <p className="text-small">Upload Template</p>

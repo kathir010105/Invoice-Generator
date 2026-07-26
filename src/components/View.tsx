@@ -7,16 +7,20 @@ interface Props {
   pdfMode?: boolean
 }
 
-const View: FC<PropsWithChildren<Props>> = ({ className, pdfMode, children }) => {
-  return (
-    <>
-      {pdfMode ? (
-        <PdfView style={compose('view ' + (className ? className : ''))}>{children}</PdfView>
-      ) : (
-        <div className={'view ' + (className ? className : '')}>{children}</div>
-      )}
-    </>
-  )
+const View: FC<PropsWithChildren<Props>> = ({
+  className = '',
+  pdfMode,
+  children,
+}) => {
+  if (pdfMode) {
+    return (
+      <PdfView style={compose(`view ${className}`)}>
+        {children}
+      </PdfView>
+    )
+  }
+
+  return <div className={`view ${className}`}>{children}</div>
 }
 
 export default View
