@@ -98,7 +98,6 @@ function App() {
             data={currentInvoice}
             setData={handleInvoiceChange}
             onToggleHistory={() => setShowHistory(!showHistory)}
-            onNewInvoice={handleNewInvoice}
           />
         </div>
       </div>

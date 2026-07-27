@@ -9,14 +9,12 @@ interface Props {
   data: Invoice
   setData(data: Invoice): void
   onToggleHistory(): void
-  onNewInvoice(): void
 }
 
 const Download: FC<Props> = ({
   data,
   setData,
   onToggleHistory,
-  onNewInvoice,
 }) => {
   const debounced = useDebounce(data, 500)
 
