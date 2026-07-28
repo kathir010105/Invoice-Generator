@@ -33,11 +33,9 @@ export const initialInvoice: Invoice = {
     { ...initialProductLine }
   ],
   subTotalLabel: 'Sub Total',
-  taxLabel: 'Sale Tax (10%)',
+  discountLabel: 'Discount',
+  discountAmount: '0.00',
+  taxLabel: 'SGST (18%)',
   totalLabel: 'TOTAL',
   currency: '₹',
-  notesLabel: '',
-  notes: '',
-  termLabel: '',
-  term: '',
 }

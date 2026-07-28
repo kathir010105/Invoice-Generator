@@ -23,6 +23,11 @@ export const useInvoiceHistory = () => {
     if (savedHistory) {
       try {
         const parsedHistory = JSON.parse(savedHistory) as InvoiceRecord[]
+        parsedHistory.forEach((record) => {
+          if (record.invoice.taxLabel === 'Sale Tax (10%)') {
+            record.invoice.taxLabel = 'SGST (18%)'
+          }
+        })
         setHistory(parsedHistory)
         setCurrentId(savedCurrentId ?? parsedHistory[0]?.id ?? null)
         return
@@ -34,6 +39,9 @@ export const useInvoiceHistory = () => {
     if (legacyInvoice) {
       try {
         const invoice = JSON.parse(legacyInvoice) as Invoice
+        if (invoice.taxLabel === 'Sale Tax (10%)') {
+          invoice.taxLabel = 'SGST (18%)'
+        }
         const newRecord: InvoiceRecord = {
           id: `${Date.now()}`,
           invoice,

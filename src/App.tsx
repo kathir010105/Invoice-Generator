@@ -10,7 +10,11 @@ const getDefaultInvoice = (): Invoice => {
   const savedTemplate = window.localStorage.getItem('defaultInvoiceTemplate')
   if (savedTemplate) {
     try {
-      return JSON.parse(savedTemplate)
+      const template = JSON.parse(savedTemplate)
+      if (template.taxLabel === 'Sale Tax (10%)') {
+        template.taxLabel = 'SGST (18%)'
+      }
+      return template
     } catch (e) {
       console.error('Failed to parse default template', e)
     }
