@@ -268,3 +268,17 @@
   border-radius: 4px;
   box-shadow: 2px 1px 6px rgba(0, 0, 0, 0.15);
 }
+
+.image.signature {
+  display: block;
+  text-align: center;
+
+  .image__img {
+    display: inline-block;
+    margin: 0 auto;
+  }
+
+  .image__upload {
+    margin: 0 auto;
+  }
+}

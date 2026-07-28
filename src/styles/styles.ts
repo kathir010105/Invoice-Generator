@@ -139,6 +139,18 @@ const styles: CSSClasses = {
   logo: {
     display: 'block',
   },
+
+  center: {
+    textAlign: 'center',
+  },
+
+  'items-center': {
+    alignItems: 'center',
+  },
+
+  signature: {
+    width: '100%',
+  },
 }
 
 export default styles

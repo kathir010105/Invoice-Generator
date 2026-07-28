@@ -14,6 +14,12 @@ const getDefaultInvoice = (): Invoice => {
       if (template.taxLabel === 'Sale Tax (10%)') {
         template.taxLabel = 'SGST (18%)'
       }
+      if (!template.signatureLabel || template.signatureLabel === 'Authorized Signatory') {
+        template.signatureLabel = 'Authorized Signate'
+      }
+      if (!template.signatureWidth || template.signatureWidth <= 150) {
+        template.signatureWidth = 200
+      }
       return template
     } catch (e) {
       console.error('Failed to parse default template', e)

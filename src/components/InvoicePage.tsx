@@ -424,7 +424,27 @@ const InvoicePage: FC<Props> = ({ data, pdfMode, onChange }) => {
           </View>
         </View>
 
-
+        <View className="flex mt-30" pdfMode={pdfMode}>
+          <View className="w-50" pdfMode={pdfMode} />
+          <View className="w-50" pdfMode={pdfMode}>
+            <View className="mt-30 items-center" pdfMode={pdfMode}>
+              <EditableFileImage
+                className="signature"
+                placeholder="Upload Signature"
+                value={invoice.signature || ''}
+                width={invoice.signatureWidth || 200}
+                pdfMode={pdfMode}
+                onChangeImage={(value) => handleChange('signature', value)}
+                onChangeWidth={(value) => handleChange('signatureWidth', value)}
+              />
+              <View className="mt-10" pdfMode={pdfMode}>
+                <Text className="center bold dark fs-20" pdfMode={pdfMode}>
+                  {invoice.signatureLabel || 'Authorized Signatory'}
+                </Text>
+              </View>
+            </View>
+          </View>
+        </View>
       </Page>
     </Document>
   )
