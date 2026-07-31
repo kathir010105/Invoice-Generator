@@ -4,6 +4,7 @@ import { Invoice, TInvoice } from '../data/types'
 import { useDebounce } from '@uidotdev/usehooks'
 import InvoicePage from './InvoicePage'
 import FileSaver from 'file-saver'
+import { initialInvoice } from '../data/initialData'
 
 interface Props {
   data: Invoice
@@ -53,6 +54,12 @@ const Download: FC<Props> = ({
     window.alert('Saved as default template!')
   }
 
+  function handleResetTemplate() {
+    window.localStorage.removeItem('defaultInvoiceTemplate')
+    setData({ ...initialInvoice })
+    window.alert('Template reset to blank invoice!')
+  }
+
   const title = data.invoiceTitle ? data.invoiceTitle.toLowerCase() : 'invoice'
   const pdfDocument = useMemo(() => <InvoicePage pdfMode={true} data={debounced} />, [debounced])
 
@@ -95,6 +102,17 @@ const Download: FC<Props> = ({
         style={{ marginTop: '10px' }}
       />
       <p className="text-small">Save as Default</p>
+
+      <button
+        onClick={handleResetTemplate}
+        aria-label="Reset Template"
+        title="Reset Template"
+        className="download-pdf__template_download"
+        style={{ marginTop: '10px', backgroundImage: 'none', backgroundColor: '#e74c3c', color: 'white', fontWeight: 'bold' }}
+      >
+        &#x21BA;
+      </button>
+      <p className="text-small">Reset Template</p>
 
       <label className="download-pdf__template_upload" style={{ marginTop: '10px' }}>
         <input type="file" accept=".json,.template" onChange={handleInput} />

@@ -37,7 +37,7 @@ export const initialInvoice: Invoice = {
   discountAmount: '0.00',
   taxLabel: 'SGST (18%)',
   totalLabel: 'TOTAL',
-  currency: '₹',
+  currency: 'Rs',
   signatureLabel: 'Authorized Signate',
   signature: '',
   signatureWidth: 200,
