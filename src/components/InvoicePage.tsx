@@ -206,17 +206,62 @@ const InvoicePage: FC<Props> = ({ data, pdfMode, onChange }) => {
             />
           </View>
           <View className="w-50" pdfMode={pdfMode}>
-            <Text className="fs-45 right bold" pdfMode={pdfMode}>
-              {invoice.title}
-            </Text>
-          </View>
-        </View>
+            <EditableInput
+              className="fs-45 right bold"
+              placeholder="Invoice"
+              value={invoice.title}
+              onChange={(value) => handleChange('title', value)}
+              pdfMode={pdfMode}
+            />
 
-        <View className="flex mt-40" pdfMode={pdfMode}>
-          <View className="w-55" pdfMode={pdfMode}>
-            <Text className="bold dark mb-5" pdfMode={pdfMode}>
-              {invoice.billTo}
-            </Text>
+            <View className="flex mb-5 mt-20" pdfMode={pdfMode}>
+              <View className="w-40" pdfMode={pdfMode}>
+                <EditableInput
+                  className="bold"
+                  value={invoice.invoiceTitleLabel}
+                  onChange={(value) => handleChange('invoiceTitleLabel', value)}
+                  pdfMode={pdfMode}
+                />
+              </View>
+              <View className="w-60" pdfMode={pdfMode}>
+                <EditableInput
+                  placeholder="INV-12"
+                  value={invoice.invoiceTitle}
+                  onChange={(value) => handleChange('invoiceTitle', value)}
+                  pdfMode={pdfMode}
+                />
+              </View>
+            </View>
+            <View className="flex mb-5" pdfMode={pdfMode}>
+              <View className="w-40" pdfMode={pdfMode}>
+                <EditableInput
+                  className="bold"
+                  value={invoice.invoiceDateLabel}
+                  onChange={(value) => handleChange('invoiceDateLabel', value)}
+                  pdfMode={pdfMode}
+                />
+              </View>
+              <View className="w-60" pdfMode={pdfMode}>
+                <EditableCalendarInput
+                  value={format(invoiceDate, dateFormat)}
+                  selected={invoiceDate}
+                  onChange={(date) =>
+                    handleChange(
+                      'invoiceDate',
+                      date && !Array.isArray(date) ? format(date, dateFormat) : '',
+                    )
+                  }
+                  pdfMode={pdfMode}
+                />
+              </View>
+            </View>
+
+            <EditableInput
+              className="bold dark mb-5 mt-10"
+              value={invoice.billTo}
+              onChange={(value) => handleChange('billTo', value)}
+              pdfMode={pdfMode}
+            />
             <EditableInput
               placeholder="Your Client's Name"
               value={invoice.clientName}
@@ -241,43 +286,6 @@ const InvoicePage: FC<Props> = ({ data, pdfMode, onChange }) => {
               onChange={(value) => handleChange('clientCountry', value)}
               pdfMode={pdfMode}
             />
-          </View>
-          <View className="w-45" pdfMode={pdfMode}>
-            <View className="flex mb-5" pdfMode={pdfMode}>
-              <View className="w-40" pdfMode={pdfMode}>
-                <Text className="bold" pdfMode={pdfMode}>
-                  {invoice.invoiceTitleLabel}
-                </Text>
-              </View>
-              <View className="w-60" pdfMode={pdfMode}>
-                <EditableInput
-                  placeholder="INV-12"
-                  value={invoice.invoiceTitle}
-                  onChange={(value) => handleChange('invoiceTitle', value)}
-                  pdfMode={pdfMode}
-                />
-              </View>
-            </View>
-            <View className="flex mb-5" pdfMode={pdfMode}>
-              <View className="w-40" pdfMode={pdfMode}>
-                <Text className="bold" pdfMode={pdfMode}>
-                  {invoice.invoiceDateLabel}
-                </Text>
-              </View>
-              <View className="w-60" pdfMode={pdfMode}>
-                <EditableCalendarInput
-                  value={format(invoiceDate, dateFormat)}
-                  selected={invoiceDate}
-                  onChange={(date) =>
-                    handleChange(
-                      'invoiceDate',
-                      date && !Array.isArray(date) ? format(date, dateFormat) : '',
-                    )
-                  }
-                  pdfMode={pdfMode}
-                />
-              </View>
-            </View>
           </View>
         </View>
 
