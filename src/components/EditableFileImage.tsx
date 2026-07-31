@@ -10,6 +10,8 @@ interface Props {
   placeholder?: string
   value?: string
   width?: number
+  minWidth?: number
+  maxWidth?: number
   onChangeImage?: (value: string) => void
   onChangeWidth?: (value: number) => void
   pdfMode?: boolean
@@ -20,6 +22,8 @@ const EditableFileImage: FC<Props> = ({
   placeholder,
   value,
   width,
+  minWidth = 100,
+  maxWidth = 250,
   onChangeImage,
   onChangeWidth,
   pdfMode,
@@ -27,11 +31,12 @@ const EditableFileImage: FC<Props> = ({
   const fileInput = useRef<HTMLInputElement>(null)
   const widthWrapper = useRef<HTMLDivElement>(null)
   const [isEditing, setIsEditing] = useState<boolean>(false)
-  const marks = {
-    100: '100px',
-    150: '150px',
-    200: '200px',
-    250: '250px',
+
+  const step = Math.round((maxWidth - minWidth) / 3)
+  const marks: Record<number, string> = {}
+  for (let i = 0; i <= 3; i++) {
+    const val = minWidth + step * i
+    marks[val] = `${val}px`
   }
 
   const handleClickOutside = () => {
@@ -126,13 +131,13 @@ const EditableFileImage: FC<Props> = ({
           {isEditing && (
             <div ref={widthWrapper} className="image__width-wrapper">
               <Slider
-                min={100}
-                max={250}
+                min={minWidth}
+                max={maxWidth}
                 marks={marks}
                 included={false}
                 step={1}
                 onChange={handleChangeWidth as any}
-                defaultValue={width || 100}
+                defaultValue={width || minWidth}
               />
             </div>
           )}

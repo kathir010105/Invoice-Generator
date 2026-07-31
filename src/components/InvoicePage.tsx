@@ -61,9 +61,9 @@ const InvoicePage: FC<Props> = ({ data, pdfMode, onChange }) => {
     if (name !== 'productLines') {
       const newInvoice = { ...invoice }
 
-      if (name === 'logoWidth' && typeof value === 'number') {
+      if ((name === 'logoWidth' || name === 'signatureWidth') && typeof value === 'number') {
         newInvoice[name] = value
-      } else if (name !== 'logoWidth' && typeof value === 'string') {
+      } else if (name !== 'logoWidth' && name !== 'signatureWidth' && typeof value === 'string') {
         newInvoice[name] = value
       }
 
@@ -440,15 +440,21 @@ const InvoicePage: FC<Props> = ({ data, pdfMode, onChange }) => {
                 className="signature"
                 placeholder="Upload Signature"
                 value={invoice.signature || ''}
-                width={invoice.signatureWidth || 200}
+                width={invoice.signatureWidth || 150}
+                minWidth={50}
+                maxWidth={400}
                 pdfMode={pdfMode}
                 onChangeImage={(value) => handleChange('signature', value)}
                 onChangeWidth={(value) => handleChange('signatureWidth', value)}
               />
               <View className="mt-10" pdfMode={pdfMode}>
-                <Text className="center bold dark fs-20" pdfMode={pdfMode}>
-                  {invoice.signatureLabel || 'Authorized Signatory'}
-                </Text>
+                <EditableInput
+                  className="center bold dark"
+                  placeholder="Authorized Signatory"
+                  value={invoice.signatureLabel || ''}
+                  onChange={(value) => handleChange('signatureLabel', value)}
+                  pdfMode={pdfMode}
+                />
               </View>
             </View>
           </View>
